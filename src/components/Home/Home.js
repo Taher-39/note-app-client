@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import GetNotes from '../GetNotes/GetNotes';
 
 const Home = () => {
@@ -11,7 +11,7 @@ const Home = () => {
         setNote(newNote)
     }
     const handleSubmit = (e) => {
-        const url = `http://localhost:4000/addNote`;
+        const url = `https://desolate-garden-71918.herokuapp.com/addNote`;
         fetch(url, {
             method: "POST",
             headers: {
@@ -29,11 +29,11 @@ const Home = () => {
 
     
     return (
-        <div style={{margin: '0 200px'}}>
+        <div>
             <h2>Note App</h2>
             <form onSubmit={handleSubmit}>
-                <input type="text" name="note" id="" onChange={handleChange} />
-                <button type="submit">Submit</button>
+                <input className='form-control d-inline w-25' type="text" name="note" id="" onChange={handleChange}  placeholder=" Note description" required/>
+                <button className='btn btn-success mx-1' type="submit">Submit</button>
             </form>
             <div>
                 <GetNotes />

@@ -4,18 +4,21 @@ const GetNotes = () => {
     const [totalNotes, setTotalNotes] = useState([])
     const [willUpdateNote, setWillUpdateNote] = useState({})
     const [changeNote, setChangeNote] = useState({})
+    const [submitArea, setSubmitArea] = useState(false)
 
     //get from database
     useEffect(() => {
-        const url = `http://localhost:4000/getNote`
+        const url = `https://desolate-garden-71918.herokuapp.com/getNote`
         fetch(url).then(res => res.json()).then(data => setTotalNotes(data))
     }, [])
 
     //load single note for update
     const handleEdit = (id) => {
-        fetch(`http://localhost:4000/getSingleNote?id=` + id)
+        fetch(`https://desolate-garden-71918.herokuapp.com/getSingleNote?id=` + id)
             .then(res => res.json())
             .then(data => setWillUpdateNote(data))
+        
+        setSubmitArea(true)
     }
     //update handler
     const handleChange = (e) => {
@@ -25,7 +28,7 @@ const GetNotes = () => {
     }
     //submit new update value
     const handleSubmit = (e) => {
-        fetch(`http://localhost:4000/updateNote/${willUpdateNote._id}`, {
+        fetch(`https://desolate-garden-71918.herokuapp.com/updateNote/${willUpdateNote._id}`, {
             method: 'PATCH',
             headers: {
                 "Content-Type":"application/json"
@@ -37,10 +40,11 @@ const GetNotes = () => {
             }
         })
         e.preventDefault()
+        setSubmitArea(false)
     }
-    //delete note 
+    //delete note
     const handleDeleteNote = (id) => {
-        const url = `http://localhost:4000/deleteNote/${id}`;
+        const url = `https://desolate-garden-71918.herokuapp.com/deleteNote/${id}`;
         fetch(url, {
             method: 'DELETE'
         })
@@ -53,20 +57,39 @@ const GetNotes = () => {
     }
     return (
         <div>
-            <div>
+            <div className='pt-4'>
                 {
-                    totalNotes.map(note => <p key={note._id}>
-                        {note.note}
-                        <button onClick={() => handleEdit(note._id)}>Edit</button>
-                        <button onClick={() => handleDeleteNote(note._id)}>Delete</button>
-                    </p>
-                    )}
+                    totalNotes.length ?
+                        <div>
+                            {
+                                totalNotes.map(note => <p borer border-1 rounded key={note._id}>
+                                    {note.note}
+                                    <button onClick={() => handleEdit(note._id)} className='btn btn-success mx-1'>
+                                        Edit
+                                    </button>
+                                    <button onClick={() => handleDeleteNote(note._id)} className='btn btn-danger mx-1'>
+                                        Delete
+                                    </button>
+                                </p>)
+                            }
+                        </div>
+                        : <div className="my-0 mx-auto mt-5">
+                            <div className="spinner-border text-danger" role="status">
+                                <span className="visually-hidden"></span>
+                            </div>
+                        </div>
+                }
             </div>
             
-            <form onSubmit={handleSubmit}>
-                <input type="text" name="note" defaultValue={willUpdateNote.note} onChange={handleChange} />
-                <button type="submit">Submit</button>
-            </form>
+            <div>
+                {
+                    submitArea && 
+                    <form onSubmit={handleSubmit}>
+                        <input className='form-control d-inline w-25' type="text" name="note" defaultValue={willUpdateNote.note} onChange={handleChange}  required/>
+                        <button type="submit" className='btn btn-success mx-1'>Submit</button>
+                    </form>
+                }
+            </div>
         </div>
     );
 };
