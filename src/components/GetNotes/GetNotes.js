@@ -44,19 +44,25 @@ const GetNotes = () => {
     }
     //delete note
     const handleDeleteNote = (id) => {
-        const url = `https://desolate-garden-71918.herokuapp.com/deleteNote/${id}`;
-        fetch(url, {
-            method: 'DELETE'
-        })
-        .then(res => res.json())
-        .then(data => {
-            if(data){
-                console.log("Delete Note Successfully.")
-            }
-        })
+        // confirm('Are You Sure For Delete..?')
 
-        const newNotes = totalNotes.filter(note => note._id !== id )
-        setTotalNotes(newNotes)
+        if ( window.confirm('Are You Sure For Delete..?') ){
+            const newNotes = totalNotes.filter(note => note._id !== id)
+            setTotalNotes(newNotes)
+
+            const url = `https://desolate-garden-71918.herokuapp.com/deleteNote/${id}`;
+            fetch(url, {
+                method: 'DELETE'
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data) {
+                        console.log("Delete Note Successfully.")
+                    }
+                })
+        }
+
+        
     }
     return (
         <div>
