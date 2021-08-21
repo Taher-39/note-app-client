@@ -21,7 +21,7 @@ const Home = () => {
         })
         .then(data => {
             if(data){
-                alert("Note Added Successfully.")
+                console.log("Note Added Successfully.")
             }
         })
         e.preventDefault()

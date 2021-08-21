@@ -4,13 +4,13 @@ const GetNotes = () => {
     const [totalNotes, setTotalNotes] = useState([])
     const [willUpdateNote, setWillUpdateNote] = useState({})
     const [changeNote, setChangeNote] = useState({})
-    const [submitArea, setSubmitArea] = useState(false)
+    // const [submitArea, setSubmitArea] = useState(false)
 
     //get from database
     useEffect(() => {
         const url = `https://desolate-garden-71918.herokuapp.com/getNote`
         fetch(url).then(res => res.json()).then(data => setTotalNotes(data))
-    }, [])
+    }, [totalNotes])
 
     //load single note for update
     const handleEdit = (id) => {
@@ -18,7 +18,7 @@ const GetNotes = () => {
             .then(res => res.json())
             .then(data => setWillUpdateNote(data))
         
-        setSubmitArea(true)
+        // setSubmitArea(true)
     }
     //update handler
     const handleChange = (e) => {
@@ -36,11 +36,11 @@ const GetNotes = () => {
             body: JSON.stringify(changeNote)
         }).then(data => {
             if(data){
-                alert("Updated Successfully.")
+                console.log("Updated Successfully.")
             }
         })
         e.preventDefault()
-        setSubmitArea(false)
+        // setSubmitArea(false)
     }
     //delete note
     const handleDeleteNote = (id) => {
@@ -51,9 +51,12 @@ const GetNotes = () => {
         .then(res => res.json())
         .then(data => {
             if(data){
-                alert("Delete Note Successfully.")
+                console.log("Delete Note Successfully.")
             }
         })
+
+        const newNotes = totalNotes.filter(note => note._id !== id )
+        setTotalNotes(newNotes)
     }
     return (
         <div>
@@ -62,7 +65,7 @@ const GetNotes = () => {
                     totalNotes.length ?
                         <div>
                             {
-                                totalNotes.map(note => <p borer border-1 rounded key={note._id}>
+                                totalNotes.map(note => <p key={note._id}>
                                     {note.note}
                                     <button onClick={() => handleEdit(note._id)} className='btn btn-success mx-1'>
                                         Edit
@@ -82,13 +85,10 @@ const GetNotes = () => {
             </div>
             
             <div>
-                {
-                    submitArea && 
                     <form onSubmit={handleSubmit}>
                         <input className='form-control d-inline w-25' type="text" name="note" defaultValue={willUpdateNote.note} onChange={handleChange}  required/>
                         <button type="submit" className='btn btn-success mx-1'>Submit</button>
                     </form>
-                }
             </div>
         </div>
     );
